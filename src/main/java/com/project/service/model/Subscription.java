@@ -1,9 +1,9 @@
-package com.project.service.model.entity;
+package com.project.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.service.model.enums.PlanType;
-import com.project.service.model.enums.TierLevel;
+import com.project.service.model.plan.PlanType;
+import com.project.service.model.tier.TierLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

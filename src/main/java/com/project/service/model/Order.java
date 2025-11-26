@@ -1,4 +1,4 @@
-package com.project.service.model.entity;
+package com.project.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

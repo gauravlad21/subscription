@@ -1,7 +1,7 @@
 package com.project.service.core.tier;
 
-import com.project.service.model.entity.Order;
-import com.project.service.model.entity.User;
+import com.project.service.model.Order;
+import com.project.service.model.User;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

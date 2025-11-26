@@ -3,11 +3,12 @@ package com.project.service.core.membership;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.project.service.model.constants.Catalog;
 import com.project.service.db.DataStore;
-import com.project.service.model.entity.Subscription;
-import com.project.service.model.entity.User;
-import com.project.service.model.enums.PlanType;
-import com.project.service.model.enums.TierLevel;
+import com.project.service.model.Subscription;
+import com.project.service.model.User;
+import com.project.service.model.plan.PlanType;
+import com.project.service.model.tier.TierLevel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MembershipService {
     private final DataStore db = DataStore.getInstance();
     private final Map<String, ReentrantLock> userLocks = new ConcurrentHashMap<>();
-
     private final ObjectMapper jsonMapper;
 
     public MembershipService() {
@@ -48,7 +48,7 @@ public class MembershipService {
             Subscription newSub = Subscription.builder()
                     .userId(userId)
                     .planType(plan)
-                    .tier(TierLevel.STANDARD) // Default start
+                    .tier(Catalog.STANDARD) // Use Catalog constant
                     .startDate(LocalDateTime.now())
                     .expiryDate(LocalDateTime.now().plusMonths(plan.getMonths()))
                     .isActive(true)
@@ -74,8 +74,9 @@ public class MembershipService {
                 throw new IllegalStateException("No active subscription found.");
             }
 
-            if (sub.getTier().getPriority() >= targetTier.getPriority()) {
-                log.info(">> INFO: User already at/above {}", targetTier);
+            // Using Comparable interface logic defined in TierLevel
+            if (sub.getTier().compareTo(targetTier) >= 0) {
+                log.info(">> INFO: User already at/above " + targetTier.getName());
                 return;
             }
 
@@ -87,7 +88,7 @@ public class MembershipService {
                 sub.setTier(targetTier);
                 logJson("Upgraded Tier", sub);
             } else {
-                log.info(">> FAIL: " + user.getName() + " not eligible for " + targetTier);
+                log.info(">> FAIL: " + user.getName() + " not eligible for " + targetTier.getName());
             }
         } catch (Exception e) {
             System.err.println("Error upgrading: " + e.getMessage());
